@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="productCatalogApp">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Product Catalog</title>
+  <style>
+    body {
+      font-family:italic;
+      margin: 20px;
+      background-color:skyblue;
+    }
+
+    .filter-section {
+      margin-bottom: 20px;
+    }
+
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .product-list > div {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px;
+      width: 200px;
+    }
+  </style>
+</head>
+
+<body ng-controller="ProductController as ctrl">
+  <div class="filter-section">
+    <label>Filter by Category:</label>
+    <select ng-model="ctrl.selectedCategory">
+      <option value="">All</option>
+      <option ng-repeat="category in ctrl.categories" value="{{category}}">{{category}}</option>
+    </select>
+
+    <label>Filter by Feature:</label>
+    <select ng-model="ctrl.selectedFeature">
+      <option value="">All</option>
+      <option ng-repeat="feature in ctrl.features" value="{{feature}}">{{feature}}</option>
+    </select>
+  </div>
+
+  <div class="product-list">
+    <div ng-repeat="product in ctrl.filteredProducts">
+      <h2>{{product.name}}</h2>
+      <p>Category: {{product.category}}</p>
+      <p>Price: ${{product.price}}</p>
+      <p>Features: {{product.features.join(', ')}}</p>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+  <script>
+    angular.module('productCatalogApp', [])
+      .controller('ProductController', function () {
+        var vm = this;
+
+        vm.categories = ['Electronics', 'Clothing', 'Books'];
+        vm.features = ['Wireless', 'Waterproof', 'High Quality'];
+
+        vm.products = [
+          { name: 'Smartphone', category: 'Electronics', price: 600.99, features: ['Wireless', 'High Quality'] },
+          { name: 'Laptop', category: 'Electronics', price: 899.99, features: ['High Quality'] },
+          { name: 'T-shirt', category: 'Clothing', price: 19.99, features: [] },
+          { name: 'Waterproof Watch', category: 'Accessories', price: 79.99, features: ['Waterproof'] },
+          { name: 'Book - AngularJS Basics', category: 'Books', price: 29.99, features: ['friendly'] }
+        ];
+
+        vm.selectedCategory = '';
+        vm.selectedFeature = '';
+
+        vm.filterProducts = function () {
+          vm.filteredProducts = vm.products.filter(function (product) {
+            return (vm.selectedCategory === '' || product.category === vm.selectedCategory) &&
+              (vm.selectedFeature === '' || product.features.includes(vm.selectedFeature));
+          });
+        };
+        vm.filterProducts();
+      });
+  </script>
+</body>
+
+</html>
